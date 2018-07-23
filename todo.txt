@@ -227,3 +227,26 @@ from TasksController@index and save it to our variable tasks, we use axios:
 }
 
 
+lesson 11 {
+    making dynamic adding new tasks
+
+    1- bind inouts to variable task:
+               <td><input type="text" id="task" class="form-control" v-model="task.title"></td>
+               <td><select name="" id="select" class="form-control" v-model="task.priority">
+                   <option>Low</option>
+                   <option>Medium</option>
+                   <option>High</option>
+               </select></td>
+                <td><button @click="storeTask" class="btn btn-primary">Add</button></td>
+    2 - create variable:
+                     task: {
+                        title: '',
+                        priority: ''
+                    }
+    3- add method storeTask:
+                storeTask(){
+                    console.log(this.task.priority);
+                }
+}
+
+

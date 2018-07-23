@@ -12,13 +12,13 @@
             <tbody>
             <task-component v-for="task in tasks" :key="task.id" :task="task"></task-component>
             <tr>
-               <td><input type="text" id="task" class="form-control" ></td>
-               <td><select name="" id="select" class="form-control">
-                   <option value="">Low</option>
-                   <option value="">Medium</option>
-                   <option value="">High</option>
+               <td><input type="text" id="task" class="form-control" v-model="task.title"></td>
+               <td><select name="" id="select" class="form-control" v-model="task.priority">
+                   <option>Low</option>
+                   <option>Medium</option>
+                   <option>High</option>
                </select></td>
-                <td><button class="btn btn-primary">Add</button></td>
+                <td><button @click="storeTask" class="btn btn-primary">Add</button></td>
             </tr>
             </tbody>
         </table>
@@ -30,7 +30,11 @@
     export default {
         data() {
             return {
-                tasks: []
+                tasks: [],
+                task: {
+                    title: '',
+                    priority: ''
+                }
             }
         },
         components: {
@@ -45,6 +49,9 @@
                         });
                     });
             },
+            storeTask(){
+                console.log(this.task.priority);
+            }
         },
         created(){
             this.getTasks();
