@@ -18,5 +18,9 @@
         "lodash": "^4.17.4",
         "popper.js": "^1.12",
         "vue": "^2.5.7"
+    },
+    "dependencies": {
+        "vue-loading-overlay": "^2.1.0",
+        "vue-spinner": "^1.0.3"
     }
 }

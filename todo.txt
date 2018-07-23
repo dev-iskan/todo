@@ -310,3 +310,35 @@ lesson 15 {
                     }
                 },
 }
+
+
+lesson 16 {
+    installing new spinner plugin :
+    npm install vue-loading-overlay --save
+
+    or another one:
+    npm install vue-spinner
+
+    in first case we do like these:
+        1 - import component:
+            // Import component
+            import Loading from 'vue-loading-overlay';
+            // Import stylesheet
+            import 'vue-loading-overlay/dist/vue-loading.min.css';
+        2 - add this to template, this actually is spinner:
+             <loading :active.sync="isLoading" :is-full-page="true"></loading>
+        3 - add this property to data():
+            isLoading: false,
+        4- on each function sending with axios add these code:
+                     storeTask(){
+                        this.isLoading = true; //initialize spinner
+                        if(this.checkInputs()){
+                            window.axios.post('/api/tasks', this.task)
+                                .then(savedTask=>{
+                                    this.tasks.push(savedTask.data);
+                                    this.task.title = '';
+                                    this.isLoading = false; // stop spinner
+                                });
+                        }
+                    },
+}

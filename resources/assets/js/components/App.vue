@@ -1,5 +1,7 @@
 <template>
     <div class="app-component">
+        <loading :active.sync="isLoading" :is-full-page="true"></loading>
+
         <table class="table">
             <thead>
             <tr>
@@ -27,6 +29,12 @@
 
 <script>
     import TaskComponent from './Task.vue';
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.min.css';
+
+
     export default {
         data() {
             return {
@@ -34,27 +42,33 @@
                 task: {
                     title: '',
                     priority: ''
-                }
+                },
+                isLoading: false,
             }
         },
         components: {
-            TaskComponent
+            TaskComponent,
+            Loading
         },
         methods: {
             getTasks() {
+                this.isLoading = true;
                 window.axios.get('/api/tasks')
                     .then(({data})=>{
                         data.forEach(task => {
                            this.tasks.push(task)
                         });
+                        this.isLoading = false;
                     });
             },
             storeTask(){
+                this.isLoading = true;  //initialize spinner
                 if(this.checkInputs()){
                     window.axios.post('/api/tasks', this.task)
                         .then(savedTask=>{
                             this.tasks.push(savedTask.data);
                             this.task.title = '';
+                            this.isLoading = false; // stop spinner
                         });
                 }
             },
@@ -64,11 +78,13 @@
             },
 
             deleteTask(id){
+                this.isLoading = true;
                 // console.log(`I GOT THE ATA ${id}`);
                 window.axios.delete(`/api/tasks/${id}`)
                     .then(()=>{
                         let index = this.tasks.findIndex(task=>task.id == id);
                         this.tasks.splice(index, 1);
+                        this.isLoading = false;
                     })
             }
         },
