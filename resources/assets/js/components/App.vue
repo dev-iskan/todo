@@ -50,12 +50,17 @@
                     });
             },
             storeTask(){
-                window.axios.post('/api/tasks', this.task)
-                    .then(savedTask=>{
-                        this.tasks.push(savedTask.data);
-                    });
-                this.task.title = '';
+                if(this.checkInputs()){
+                    window.axios.post('/api/tasks', this.task)
+                        .then(savedTask=>{
+                            this.tasks.push(savedTask.data);
+                            this.task.title = '';
+                        });
+                }
+            },
 
+            checkInputs(){
+                if(this.task.title && this.task.priority) return true
             },
 
             deleteTask(id){

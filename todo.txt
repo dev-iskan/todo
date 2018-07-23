@@ -294,4 +294,19 @@ lesson 13 - 14 {
      то есть создадим index, это task который будет удален, у которого id совпадает с id из таблицы, далее конкретно удаляем
 }
 
-
+lesson 15 {
+    for validation let's create new method checkInputs():
+                checkInputs(){
+                    if(this.task.title && this.task.priority) return true
+                },
+    and use method in store() method:
+                storeTask(){
+                    if(this.checkInputs()){
+                        window.axios.post('/api/tasks', this.task)
+                            .then(savedTask=>{
+                                this.tasks.push(savedTask.data);
+                                this.task.title = '';
+                            });
+                    }
+                },
+}
