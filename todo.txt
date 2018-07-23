@@ -1,0 +1,198 @@
+In this app we are going to implement laravel and vue in order to make to - do app.
+1)
+composer require
+npm install
+cp .env.example .env
+php artisan make:auth
+delete welcome.blade.php and unnecessary route,
+change redirect path to '/' in auth controllers
+
+2)
+Initialize laravel app, create migrations, model and controller rest
+run command php artisan make:model Task -mcr  //migration, restful controller
+Task migration:
+ Schema::create('tasks', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title');
+            $table->string('priority')->nullable();
+            $table->timestamps();
+ });
+
+
+Routes in api.php, actually this routes are in such uri localhost:8000/api/tasks/...:
+Route::resource('/tasks', 'TaskController', [
+    'except'=>['edit', 'show']
+]);
+
+Model:
+  protected $fillable = [
+        'title',
+        'priority'
+    ];
+
+Controller:
+Actually in order vue.js output data from laravel correctly we need to serialize in json format returned response,
+so we return response function of serialized data with status
+    public function index()
+    {
+        //
+        return response(Task::all()->jsonSerialize(), Response::HTTP_OK);
+    }
+here we return all tasks from db
+
+    public function create(Generator $faker)
+    {
+        //
+        $task = new Task();
+        $task->title = $faker->sentence(2);
+        $task->priority = $faker->boolean ? 'low': 'high';
+        $task->save();
+
+        return response($task->jsonSerialize(), Response::HTTP_CREATED);
+
+    }
+this function generally for example, it returns fake data, but it save to db
+
+    public function store(Request $request)
+    {
+        //
+        $task = new Task();
+        $task->title = $request->title;
+        $task->priority = $request->priority;
+        $task->save();
+
+        return response($task->jsonSerialize(), Response::HTTP_CREATED);
+    }
+this function returns already created task object
+
+    public function destroy(Task $task)
+    {
+        //
+        $task->delete();
+        return response(null, Response::HTTP_OK);
+    }
+this function just delete necessary task from db
+
+
+3)Initialize vue.js objects and components
+ let's create two vue components:
+ App.vue and Task.vue in assets/js/components folder
+ and  delete examplecomponent
+
+in order to run compilation and alongside make changes with automatic updates we use command:
+npm run development -- --watch
+
+
+ then in app.js instead of this line:
+ Vue.component('example-component', require('./components/ExampleComponent.vue'));
+ we add this line:
+ import App from './components/App.vue';
+ which actually means to import App component and call it App, no matter how you call it, it template it will be defined
+ as kebab-case with lowercase: App -> app, TaskComponent -> task-component
+ also initialize vue and define components:
+         const app = new Vue({
+             el: '#app',
+             components: {
+                 App
+             }
+         });
+
+ next we initialize tags  <app></app> in home.blade.php, which means instead of this tags we will have compiled vue html document
+
+ then in each vue component we must write template, script, style. We actually are going to work only with this representation
+ of vue.js:
+ <template>
+    ...
+ </template>
+
+ <script>
+   ...
+ </script>
+
+ <style>
+    ...
+ </style>
+
+Next let's write something here:
+    first let's write scripts
+        import TaskComponent from './Task.vue';
+        export default {
+                data() {
+                    return {
+                        tasks: [
+                            {
+                                id: 1,
+                                title: 'Task1',
+                                priority: 'low'
+                            },
+                            {
+                                id: 2,
+                                title: 'Task2',
+                                priority: 'low'
+                            },
+                            {
+                                id: 3,
+                                title: 'Task3',
+                                priority: 'high'
+                            }
+                        ]
+                    }
+                },
+                components: {
+                    TaskComponent
+                }
+            }
+     here we again import component in this case TaskComponent, then we define simply properties of vue object: data()
+
+     next in template we are going to show all written tasks in template, till this point we show just fake data,
+     which is saved in data() called tasks and show it in <template>:
+     <div class="app-component">
+             <table class="table">
+                 <thead>
+                 <tr>
+                     <th>Task title</th>
+                     <th>Priority level</th>
+                     <th>Actions</th>
+                 </tr>
+                 </thead>
+                 <tbody>
+                 <task-component v-for="task in tasks" :key="task.id" :task="task"></task-component>
+                 <tr>
+                    <td><input type="text" id="task" class="form-control" ></td>
+                    <td><select name="" id="select" class="form-control">
+                        <option value="">Low</option>
+                        <option value="">Medium</option>
+                        <option value="">High</option>
+                    </select></td>
+                     <td><button class="btn btn-primary">Add</button></td>
+                 </tr>
+                 </tbody>
+             </table>
+         </div>
+    here we see first we create div with class="app-component" with bootstrap table. Inside tbody we initialize
+    another component TaskComponent, frankly speaking we add another html to our template and via tags
+    v-for="task in tasks" , with unique :key = "task.id" , and object itself :task="task" we bind tasks with
+    task-component.
+
+    Let's see TaskComponent.vue:
+    Here again we use standard way of defining and inside scripts we must assign sent task to our task property
+    by using props property of vue:
+        export default{
+            data(){
+                return {
+
+                }
+            },
+            props: ['task']
+        }
+
+     and of course in this <template> we simply loop table row <tr> with task properties:
+     <template>
+             <tr>
+                 <td>{{task.title}}</td>
+                 <td>{{task.priority}}</td>
+                 <td><button class="btn btn-danger">Remove</button></td>
+             </tr>
+     </template>
+
+
