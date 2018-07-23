@@ -20,7 +20,6 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
-        "vue-loading-overlay": "^2.1.0",
-        "vue-spinner": "^1.0.3"
+        "vue-loading-overlay": "^2.1.0"
     }
 }
