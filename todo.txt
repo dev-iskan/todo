@@ -247,6 +247,14 @@ lesson 11 {
                 storeTask(){
                     console.log(this.task.priority);
                 }
+     lesson 11:
+     4- edit method storeTask:
+                storeTask(){
+                     window.axios.post('/api/tasks', this.task)
+                         .then(savedTask=>{
+                             this.tasks.push(savedTask.data);
+                         });
+                 }
 }
 
 

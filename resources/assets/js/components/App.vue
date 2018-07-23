@@ -50,7 +50,10 @@
                     });
             },
             storeTask(){
-                console.log(this.task.priority);
+                window.axios.post('/api/tasks', this.task)
+                    .then(savedTask=>{
+                        this.tasks.push(savedTask.data);
+                    });
             }
         },
         created(){
