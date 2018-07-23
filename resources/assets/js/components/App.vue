@@ -3,6 +3,7 @@
         <table class="table">
             <thead>
             <tr>
+                <th>Id</th>
                 <th>Task title</th>
                 <th>Priority level</th>
                 <th>Actions</th>
@@ -29,27 +30,24 @@
     export default {
         data() {
             return {
-                tasks: [
-                    {
-                        id: 1,
-                        title: 'Task1',
-                        priority: 'low'
-                    },
-                    {
-                        id: 2,
-                        title: 'Task2',
-                        priority: 'low'
-                    },
-                    {
-                        id: 3,
-                        title: 'Task3',
-                        priority: 'high'
-                    }
-                ]
+                tasks: []
             }
         },
         components: {
             TaskComponent
+        },
+        methods: {
+            getTasks() {
+                window.axios.get('/api/tasks')
+                    .then(({data})=>{
+                        data.forEach(task => {
+                           this.tasks.push(task)
+                        });
+                    });
+            },
+        },
+        created(){
+            this.getTasks();
         }
     }
 </script>

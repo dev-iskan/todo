@@ -196,3 +196,34 @@ Next let's write something here:
      </template>
 
 
+
+
+lesson 10 {
+lets make getting tasks asynchronous, we crete property methods add create method which will take all tasks from api
+from TasksController@index and save it to our variable tasks, we use axios:
+  data() {
+       return {
+           tasks: []
+       }
+   },
+
+   methods: {
+       getTasks() {
+           window.axios.get('/api/tasks')
+               .then(({data})=>{
+                   data.forEach(task => {
+                      this.tasks.push(task)
+                   });
+               });
+       },
+   },
+    in this method, we use ES6 fat arrows functions, method get('uri').then(promise)
+
+   and in order to call this method we  use property created(), which will automatically call functions defined in it
+   as soon as vue object created:
+   created(){
+      this.getTasks();
+   }
+}
+
+
