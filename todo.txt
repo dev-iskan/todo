@@ -247,7 +247,7 @@ lesson 11 {
                 storeTask(){
                     console.log(this.task.priority);
                 }
-     lesson 11:
+     lesson 12:
      4- edit method storeTask:
                 storeTask(){
                      window.axios.post('/api/tasks', this.task)
@@ -255,6 +255,43 @@ lesson 11 {
                              this.tasks.push(savedTask.data);
                          });
                  }
+}
+
+
+
+lesson 13 - 14 {
+
+    in this part we make deletion of task
+    1 - create event on clicking button in TaskComponent.vue and create method removeTask:
+        <button class="btn btn-danger" @click="removeTask">Remove</button>
+
+         methods: {
+           removeTask() {
+             this.$emit('delete', this.task.id);
+           }
+         },
+        here we see that on clicking we invoke method removeTask which itself emmit event 'delete' in parent App.vue
+        component. Данная конструкция как бы создает событие у родительского класса под названием delete и передает id
+        того задания которое нужно удалить.
+
+    2-Далее в родительском компоненте нужно слушать даннок событие, и слушать будем
+     прям при вызове task-component:
+         <task-component v-for="task in tasks" :key="task.id" :task="task" @delete="deleteTask"></task-component>
+     и тут мы видим @delete="deleteTask" ,  то есть событие delete будет обрабатываться методом deleteTask:
+
+        deleteTask(id){
+            // console.log(`I GOT THE ATA ${id}`);
+            window.axios.delete(`/api/tasks/${id}`)
+                .then(()=>{
+                    let index = this.tasks.findIndex(task=>task.id == id);
+                    this.tasks.splice(index, 1);
+                })
+        }
+     здесь уже конкретно с помощью пакета axios вызываем http метод delete и передаем ему id task которое будет удалено,
+     а после при успешном удалении, мы удалим со страницы данный элемент, с помощью конструкции:
+            let index = this.tasks.findIndex(task=>task.id == id);
+            this.tasks.splice(index, 1);
+     то есть создадим index, это task который будет удален, у которого id совпадает с id из таблицы, далее конкретно удаляем
 }
 
 

@@ -10,7 +10,7 @@
             </tr>
             </thead>
             <tbody>
-            <task-component v-for="task in tasks" :key="task.id" :task="task"></task-component>
+            <task-component v-for="task in tasks" :key="task.id" :task="task" @delete="deleteTask"></task-component>
             <tr>
                <td><input type="text" id="task" class="form-control" v-model="task.title"></td>
                <td><select name="" id="select" class="form-control" v-model="task.priority">
@@ -54,6 +54,17 @@
                     .then(savedTask=>{
                         this.tasks.push(savedTask.data);
                     });
+                this.task.title = '';
+
+            },
+
+            deleteTask(id){
+                // console.log(`I GOT THE ATA ${id}`);
+                window.axios.delete(`/api/tasks/${id}`)
+                    .then(()=>{
+                        let index = this.tasks.findIndex(task=>task.id == id);
+                        this.tasks.splice(index, 1);
+                    })
             }
         },
         created(){
