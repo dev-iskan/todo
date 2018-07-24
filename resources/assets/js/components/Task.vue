@@ -16,7 +16,7 @@
         },
         methods: {
             removeTask() {
-                this.$emit('delete', this.task.id);
+                if(confirm('Are you sure?')) this.$emit('delete', this.task.id);
             }
         },
         props: ['task']
